@@ -1,276 +1,428 @@
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
+  Camera,
   ChevronLeft,
   ChevronRight,
   Heart,
-  Sparkles,
-  Camera,
-  Flower2
+  X,
 } from 'lucide-react';
-
 import Section from '../components/Section.jsx';
 import { CONFIG } from '../config.js';
 
-function MonthCard({ month, caption, images, index }) {
+function MonthCard({ month, caption, images, onOpen }) {
   const [active, setActive] = useState(0);
 
-  const total = images.length;
-  const next = () => setActive((prev) => (prev + 1) % total);
-  const previous = () =>
-    setActive((prev) => (prev - 1 + total) % total);
+  const hasPhotos = images.length > 0;
+  const currentImage = images[active];
+  const hasMultiple = images.length > 1;
 
-  const paddedMonth = String(month).padStart(2, '0');
+  const changePhoto = (direction) => {
+    setActive((current) =>
+      (current + direction + images.length) % images.length
+    );
+  };
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 35 }}
+    <motion.li
+      className="milestone-card"
+      initial={{ opacity: 0, y: 22 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.65, delay: (index % 2) * 0.1 }}
-      whileHover={{ y: -7 }}
-      className="group overflow-hidden rounded-[28px] border border-[#E9DFD2] bg-[#FFFCF7] shadow-[0_8px_30px_rgba(91,70,49,0.07)] transition-shadow duration-500 hover:shadow-[0_18px_40px_rgba(91,70,49,0.13)]"
+      viewport={{ once: true, margin: '-35px' }}
+      transition={{ duration: 0.45, ease: 'easeOut' }}
     >
-      {/* PHOTO AREA */}
-      <div className="relative p-3 pb-0 sm:p-4 sm:pb-0">
+      <div className="milestone-card-top">
+        <span className="milestone-number">
+          {String(month).padStart(2, '0')}
+        </span>
 
-        <div className="relative h-[340px] overflow-hidden rounded-[21px] bg-[#F1E8DC] sm:h-[390px] lg:h-[410px]">
+        <div className="milestone-card-heading">
+          <span className="milestone-kicker">A LITTLE CHAPTER</span>
+          <h3>{month === 1 ? 'First Month' : `${month} Months`}</h3>
+        </div>
 
-          <AnimatePresence mode="wait" initial={false}>
-            {images[active] ? (
+        <span className="milestone-heart" aria-hidden="true">
+          <Heart size={17} strokeWidth={1.5} />
+        </span>
+      </div>
+
+      <div className="milestone-photo-shell">
+        <button
+          type="button"
+          className={`milestone-photo-stage ${
+            hasPhotos ? 'has-photo' : 'is-empty'
+          }`}
+          onClick={() => {
+            if (hasPhotos) onOpen(images, active, month);
+          }}
+          disabled={!hasPhotos}
+          aria-label={`Open month ${month} photo`}
+        >
+          {hasPhotos ? (
+            <AnimatePresence mode="wait" initial={false}>
               <motion.img
-                key={images[active]}
-                src={images[active]}
-                alt={`Shaun Matthew - Month ${month}`}
+                key={`${month}-${currentImage}`}
+                src={currentImage}
+                alt={`Month ${month}, photo ${active + 1}`}
                 loading="lazy"
-                initial={{ opacity: 0, scale: 1.06 }}
+                decoding="async"
+                initial={{ opacity: 0.25, scale: 0.985 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.4 }}
-                className="absolute inset-0 h-full w-full object-cover"
+                exit={{ opacity: 0.15, scale: 0.99 }}
+                transition={{ duration: 0.28 }}
+                className="milestone-photo-image"
               />
-            ) : (
-              <motion.div
-                key="placeholder"
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#A68D76]"
-              >
-                <Camera size={38} strokeWidth={1.2} />
-                <span className="font-serif text-sm italic">
-                  Precious memories go here
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </AnimatePresence>
+          ) : (
+            <div className="milestone-placeholder">
+              <span className="milestone-placeholder-icon">
+                <Camera size={25} strokeWidth={1.4} />
+              </span>
+              <span className="milestone-placeholder-title">
+                A memory is waiting
+              </span>
+              <span className="milestone-placeholder-subtitle">
+                Add a photo for this month
+              </span>
+            </div>
+          )}
+        </button>
 
-          {/* TOP LEFT MONTH BADGE */}
-          <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-white/60 bg-[#FFFCF0]/95 px-3 py-2 shadow-sm backdrop-blur-md">
-            <Heart size={13} className="fill-[#C88E83] text-[#C88E83]" />
-            <span className="text-[10px] font-bold tracking-[0.18em] text-[#705B4A]">
-              MONTH {paddedMonth}
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              className="milestone-photo-arrow previous"
+              onClick={() => changePhoto(-1)}
+              aria-label="Previous photo"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            <button
+              type="button"
+              className="milestone-photo-arrow next"
+              onClick={() => changePhoto(1)}
+              aria-label="Next photo"
+            >
+              <ChevronRight size={18} />
+            </button>
+
+            <span className="milestone-photo-count">
+              {active + 1} <span>/</span> {images.length}
             </span>
-          </div>
-
-          {/* PHOTO COUNTER */}
-          {total > 1 && (
-            <div className="absolute bottom-4 right-4 rounded-full border border-white/50 bg-black/35 px-3 py-1.5 text-[11px] font-medium tracking-wider text-white backdrop-blur-md">
-              {String(active + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
-            </div>
-          )}
-
-          {/* PHOTO CONTROLS */}
-          {total > 1 && (
-            <>
-              <button
-                onClick={previous}
-                aria-label="Previous photo"
-                className="absolute left-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/60 bg-white/85 text-[#725C49] shadow-md transition hover:scale-110 hover:bg-white"
-              >
-                <ChevronLeft size={19} />
-              </button>
-
-              <button
-                onClick={next}
-                aria-label="Next photo"
-                className="absolute right-3 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-white/60 bg-white/85 text-[#725C49] shadow-md transition hover:scale-110 hover:bg-white"
-              >
-                <ChevronRight size={19} />
-              </button>
-            </>
-          )}
-        </div>
+          </>
+        )}
       </div>
 
-      {/* CARD DETAILS */}
-      <div className="px-5 pb-6 pt-5 sm:px-6">
-
-        <div className="flex items-center justify-between">
-          <span className="font-serif text-[12px] italic tracking-widest text-[#B39A7F]">
-            A little memory to treasure
-          </span>
-          <Sparkles size={15} className="text-[#D4B77E]" />
+      {hasMultiple && (
+        <div className="milestone-dots">
+          {images.map((image, index) => (
+            <button
+              type="button"
+              key={`${image}-${index}`}
+              onClick={() => setActive(index)}
+              className={`milestone-dot ${
+                active === index ? 'active' : ''
+              }`}
+              aria-label={`Show photo ${index + 1}`}
+              aria-pressed={active === index}
+            />
+          ))}
         </div>
+      )}
 
-        <h3 className="mt-2 font-serif text-[25px] font-semibold leading-tight text-[#574638]">
-          {caption}
-        </h3>
-
-        <div className="mt-4 flex items-center justify-between border-t border-[#EDE4D9] pt-4">
-          <span className="text-[10px] font-semibold tracking-[0.2em] text-[#A38C75]">
-            {paddedMonth} — TWELVE MONTHS OF LOVE
-          </span>
-
-          {total > 1 && (
-            <div className="flex items-center gap-1.5">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  aria-label={`View photo ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    active === i
-                      ? 'w-5 bg-[#B79B78]'
-                      : 'w-1.5 bg-[#E4D8C9] hover:bg-[#B79B78]'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="milestone-card-caption">
+        <p>{caption}</p>
+        {hasPhotos && <span>Tap the photo to view</span>}
       </div>
-    </motion.article>
+    </motion.li>
   );
 }
 
+const MILESTONE_CAPTIONS = [
+  'The beginning of a beautiful little journey.',
+  'Two months of smiles and little discoveries.',
+  'Three months of growing sweeter every day.',
+  'Four months filled with love and laughter.',
+  'Five months of precious little moments.',
+  'Six months of happiness and milestones.',
+  'Seven months of curiosity and joy.',
+  'Eight months of endless cuddles.',
+  'Nine months of growing and glowing.',
+  'Ten months of making memories.',
+  'Eleven months of our sweetest adventure.',
+  'Twelve months of pure happiness.',
+];
+
 export default function Milestones() {
+  const [lightbox, setLightbox] = useState(null);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
+  const getImages = (month) => {
+    const album = CONFIG.milestoneAlbums?.[month - 1];
+    if (Array.isArray(album) && album.length) return album.filter(Boolean);
+    const single = CONFIG.milestoneImages?.[month - 1];
+    return single ? [single] : [];
+  };
+
+  const openPhoto = (images, index, month) => setLightbox({ images, index, month });
+
+  const changePhoto = (direction) => {
+    setLightbox((current) => {
+      if (!current) return null;
+      return {
+        ...current,
+        index: (current.index + direction + current.images.length) % current.images.length,
+      };
+    });
+  };
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const handleKey = (event) => {
+      if (event.key === 'Escape') setLightbox(null);
+      if (event.key === 'ArrowLeft') changePhoto(-1);
+      if (event.key === 'ArrowRight') changePhoto(1);
+    };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKey);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [lightbox]);
+
   return (
-    <Section
-      id="milestones"
-      className="relative overflow-hidden bg-[#F8F3EB] px-4 py-20 sm:px-6 sm:py-28"
-    >
-      {/* DECORATIVE BACKGROUND */}
-      <div className="pointer-events-none absolute -left-20 top-24 h-64 w-64 rounded-full bg-[#E9DCCB]/35 blur-3xl" />
-      <div className="pointer-events-none absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-[#EAD9D0]/35 blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl">
-
-        {/* SECTION HEADER */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-14 text-center sm:mb-20"
-        >
-          <div className="mb-5 flex items-center justify-center gap-3">
-            <span className="h-px w-10 bg-[#C9AE8B]" />
-            <Flower2 size={17} className="text-[#B79B78]" />
-            <span className="text-[10px] font-semibold tracking-[0.35em] text-[#A68A6D]">
-              OUR LITTLE JOURNEY
-            </span>
-            <Flower2 size={17} className="text-[#B79B78]" />
-            <span className="h-px w-10 bg-[#C9AE8B]" />
-          </div>
-
-          <h2 className="font-serif text-4xl font-medium leading-tight tracking-tight text-[#574638] sm:text-5xl lg:text-6xl">
-            12 Months of
-            <br />
-            <span className="italic text-[#B38D79]">
-              Pure Happiness
-            </span>
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-lg font-serif text-base italic leading-relaxed text-[#927D6B] sm:text-lg">
-            Twelve beautiful months, countless little moments,
-            and a lifetime of love.
-          </p>
-
-          <div className="mt-7 flex items-center justify-center gap-2">
-            <Heart size={13} className="fill-[#C99489] text-[#C99489]" />
-            <span className="text-[10px] font-semibold tracking-[0.3em] text-[#A38B73]">
-              SHAUN MATTHEW
-            </span>
-            <Heart size={13} className="fill-[#C99489] text-[#C99489]" />
-          </div>
-        </motion.div>
-
-        {/* MONTH COUNTER WIDGETS */}
-        <div className="mb-10 grid grid-cols-3 gap-3 sm:mb-14 sm:gap-5">
-
-          <div className="rounded-2xl border border-[#E9DFD2] bg-[#FFFCF7] px-3 py-4 text-center shadow-sm sm:py-5">
-            <Heart className="mx-auto mb-2 text-[#C99489]" size={19} />
-            <p className="font-serif text-2xl text-[#574638]">12</p>
-            <p className="mt-1 text-[9px] font-semibold tracking-[0.15em] text-[#A38B73] sm:text-[10px]">
-              MONTHS
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-[#E9DFD2] bg-[#FFFCF7] px-3 py-4 text-center shadow-sm sm:py-5">
-            <Camera className="mx-auto mb-2 text-[#B79B78]" size={19} />
-            <p className="font-serif text-2xl text-[#574638]">
-              {Object.values(CONFIG.milestoneAlbums || {}).reduce(
-                (sum, album) => sum + album.length,
-                0
-              )}
-            </p>
-            <p className="mt-1 text-[9px] font-semibold tracking-[0.15em] text-[#A38B73] sm:text-[10px]">
-              MEMORIES
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-[#E9DFD2] bg-[#FFFCF7] px-3 py-4 text-center shadow-sm sm:py-5">
-            <Sparkles className="mx-auto mb-2 text-[#D0AD70]" size={19} />
-            <p className="font-serif text-2xl text-[#574638]">∞</p>
-            <p className="mt-1 text-[9px] font-semibold tracking-[0.15em] text-[#A38B73] sm:text-[10px]">
-              LOVE
-            </p>
-          </div>
-
-        </div>
-
-        {/* TWELVE MONTHS GRID */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7 lg:gap-9">
-
-          {CONFIG.milestones.map((caption, index) => {
-            const album = CONFIG.milestoneAlbums?.[index] || [];
-            const fallback = CONFIG.milestoneImages?.[index];
-
-            const images = album.length
-              ? album
-              : fallback
-                ? [fallback]
-                : [''];
-
-            return (
-              <MonthCard
-                key={index}
-                month={index + 1}
-                caption={caption}
-                images={images}
-                index={index}
-              />
-            );
-          })}
-
-        </div>
-
-        {/* BOTTOM MESSAGE */}
-        <div className="mt-16 text-center sm:mt-20">
-          <div className="mx-auto mb-4 flex items-center justify-center gap-3 text-[#B79B78]">
-            <span className="h-px w-12 bg-[#DCCBB6]" />
-            <Heart size={16} className="fill-[#C99489]" />
-            <span className="h-px w-12 bg-[#DCCBB6]" />
-          </div>
-
-          <p className="font-serif text-xl italic text-[#806C58] sm:text-2xl">
-            Every little moment is a big memory.
-          </p>
-
-          <p className="mt-3 text-[9px] font-semibold tracking-[0.3em] text-[#B29B82]">
-            FOREVER OUR LITTLE SUNSHINE
-          </p>
-        </div>
-
+    <Section id="milestones" title="12 MONTHS OF PURE HAPPINESS">
+      <div className="milestone-grid">
+        {months.map((month) => (
+          <MonthCard
+            key={month}
+            month={month}
+            caption={MILESTONE_CAPTIONS[month - 1]}
+            images={getImages(month)}
+            onOpen={openPhoto}
+          />
+        ))}
       </div>
+
+      <AnimatePresence>
+        {lightbox && (
+          <motion.div
+            className="milestone-lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightbox(null)}
+          >
+            <motion.div
+              className="milestone-lightbox-content"
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.92 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button type="button" onClick={() => setLightbox(null)}>
+                <X size={23} />
+              </button>
+              <img
+                src={lightbox.images[lightbox.index]}
+                alt={`Month ${lightbox.month} photo ${lightbox.index + 1}`}
+              />
+              <p>Month {lightbox.month} · Photo {lightbox.index + 1} of {lightbox.images.length}</p>
+              {lightbox.images.length > 1 && (
+                <>
+                  <button type="button" onClick={() => changePhoto(-1)}>
+                    <ChevronLeft />
+                  </button>
+                  <button type="button" onClick={() => changePhoto(1)}>
+                    <ChevronRight />
+                  </button>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        .milestone-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 20px;
+          max-width: 1100px;
+          padding: 0;
+          margin: 30px auto;
+          list-style: none;
+        }
+        .milestone-card {
+          min-width: 0;
+          padding: 15px;
+          border: 1px solid #e9deca;
+          border-radius: 12px;
+          background: #fffdf8;
+          box-shadow: 0 8px 25px rgba(105,86,62,.06);
+        }
+        .milestone-card-top {
+          display: flex;
+          align-items: center;
+          gap: 11px;
+          margin-bottom: 14px;
+        }
+        .milestone-number {
+          color: #b99a65;
+          font: 26px Georgia, serif;
+        }
+        .milestone-card-heading { flex: 1; min-width: 0; }
+        .milestone-kicker {
+          color: #ad9978;
+          font-size: 8px;
+          letter-spacing: .16em;
+        }
+        .milestone-card-heading h3 {
+          margin: 3px 0 0;
+          color: #705b41;
+          font: 400 17px Georgia, serif;
+        }
+        .milestone-heart { color: #c1a675; }
+        .milestone-photo-shell {
+          position: relative;
+          width: 100%;
+          overflow: hidden;
+          border: 1px solid #eee3d1;
+          background: #f8f2e8;
+        }
+        .milestone-photo-stage {
+          display: grid;
+          place-items: center;
+          width: 100%;
+          height: 290px;
+          padding: 9px;
+          background: #f8f2e8;
+        }
+        .milestone-photo-image {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          object-position: center;
+        }
+        .milestone-placeholder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 9px;
+          width: 100%;
+          height: 100%;
+          color: #a88f68;
+          background: #f4ead9;
+          text-align: center;
+        }
+        .milestone-placeholder-title { font: italic 15px Georgia, serif; }
+        .milestone-placeholder-subtitle { color: #a89579; font-size: 10px; }
+        .milestone-photo-arrow {
+          position: absolute;
+          top: 50%;
+          display: grid;
+          place-items: center;
+          width: 34px;
+          height: 34px;
+          border: 1px solid #e6d6b9;
+          border-radius: 50%;
+          color: #8f754e;
+          background: rgba(255,253,248,.95);
+          transform: translateY(-50%);
+        }
+        .milestone-photo-arrow.previous { left: 9px; }
+        .milestone-photo-arrow.next { right: 9px; }
+        .milestone-photo-count {
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          padding: 5px 9px;
+          border-radius: 20px;
+          color: white;
+          background: rgba(80,65,46,.65);
+          font-size: 10px;
+        }
+        .milestone-dots {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-top: 12px;
+        }
+        .milestone-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #e5d9c5;
+        }
+        .milestone-dot.active {
+          width: 18px;
+          border-radius: 10px;
+          background: #b99a65;
+        }
+        .milestone-card-caption { margin-top: 14px; text-align: center; }
+        .milestone-card-caption p {
+          margin: 0;
+          color: #806d54;
+          font: 13px/1.6 Georgia, serif;
+        }
+        .milestone-card-caption span {
+          display: block;
+          margin-top: 7px;
+          color: #b3a287;
+          font-size: 9px;
+        }
+        .milestone-lightbox {
+          position: fixed;
+          inset: 0;
+          z-index: 999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          background: rgba(35,29,22,.92);
+          backdrop-filter: blur(9px);
+        }
+        .milestone-lightbox-content {
+          position: relative;
+          width: min(90vw, 650px);
+          padding: 12px;
+          border: 1px solid #d7c29d;
+          background: #fffdf8;
+        }
+        .milestone-lightbox-content img {
+          display: block;
+          width: 100%;
+          height: min(72vh, 650px);
+          object-fit: contain;
+          background: #f8f2e8;
+        }
+        .milestone-lightbox-content p {
+          color: #927950;
+          font: 12px Georgia, serif;
+          text-align: center;
+        }
+        @media (max-width: 850px) {
+          .milestone-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+          .milestone-photo-stage { height: 260px; }
+        }
+        @media (max-width: 560px) {
+          .milestone-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 17px;
+            padding: 0 10px;
+          }
+          .milestone-card { padding: 13px; }
+          .milestone-photo-stage { height: clamp(250px, 78vw, 390px); }
+          .milestone-card-heading h3 { font-size: 18px; }
+          .milestone-card-caption p { font-size: 14px; }
+        }
+      `}</style>
     </Section>
   );
 }
