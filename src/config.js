@@ -95,6 +95,27 @@ export const CONFIG = {
   '/images/eight/8-10.jpg',
   '/images/eight/8-11.jpg',
   '/images/eight/8-12.jpg'
+],
+8: [
+  '/images/nine/9-1.jpg',
+  '/images/nine/9-2.jpg',
+  '/images/nine/9-3.jpg',
+  '/images/nine/9-4.jpg',
+  '/images/nine/9-5.jpg',
+  '/images/nine/9-6.jpg',
+  '/images/nine/9-7.jpg',
+  '/images/nine/9-8.jpg',
+  '/images/nine/9-9.jpg',
+  '/images/nine/9-10.jpg',
+  '/images/nine/9-11.jpg',
+  '/images/nine/9-12.jpg',
+  '/images/nine/9-13.jpg',
+  '/images/nine/9-14.jpg',
+  '/images/nine/9-15.jpg',
+  '/images/nine/9-16.jpg'
+
+
+
 ]
 
 
