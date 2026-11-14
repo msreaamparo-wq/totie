@@ -65,6 +65,21 @@ export const CONFIG = {
   '/images/six/6-5.jpg',
   '/images/six/6-6.jpg',
   '/images/six/6-7.jpg'
+],
+// Month 7
+6: [
+  '/images/seven/7-1.jpg',
+  '/images/seven/7-2.jpg',
+  '/images/seven/7-3.jpg',
+  '/images/seven/7-4.jpg',
+  '/images/seven/7-5.jpg',
+  '/images/seven/7-6.jpg',
+  '/images/seven/7-7.jpg',
+  '/images/seven/7-8.jpg',
+  '/images/seven/7-9.jpg',
+  '/images/seven/7-10.jpg',
+  '/images/seven/7-11.jpg',
+  '/images/seven/7-12.jpg'
 ]
 
   },
