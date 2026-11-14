@@ -15,7 +15,58 @@ export const CONFIG = {
   milestoneImages: Array(12).fill(''),
   // Add multiple photos for a month here. Guests can browse them directly on the milestone card.
   milestoneAlbums: {
-    0: ['/images/one/1-1.jpg', '/images/one/1-2.jpg', '/images/one/1-3.jpg']
+    0: ['/images/one/1-1.jpg', '/images/one/1-2.jpg', '/images/one/1-3.jpg'],
+    1: [
+    '/images/two/2-1.jpg',
+    '/images/two/2-2.jpg',
+    '/images/two/2-3.jpg',
+    '/images/two/2-4.jpg',
+    '/images/two/2-5.jpg',
+    '/images/two/2-6.jpg'
+  ],
+  2: [
+    '/images/three/3-1.jpg',
+    '/images/three/3-2.jpg',
+    '/images/three/3-3.jpg',
+    '/images/three/3-4.jpg',
+    '/images/three/3-5.jpg',
+    '/images/three/3-6.jpg',
+    '/images/three/3-7.jpg',
+    '/images/three/3-8.jpg'
+  ],
+    3: [
+    '/images/four/4-1.jpg',
+    '/images/four/4-2.jpg',
+    '/images/four/4-3.jpg',
+    '/images/four/4-4.jpg',
+    '/images/four/4-5.jpg',
+    '/images/four/4-6.jpg',
+    '/images/four/4-7.jpg',
+    '/images/four/4-8.jpg'
+  ],
+  // Month 5
+  4: [
+  '/images/five/5-1.jpg',
+  '/images/five/5-2.jpg',
+  '/images/five/5-3.jpg',
+  '/images/five/5-4.jpg',
+  '/images/five/5-5.jpg',
+  '/images/five/5-6.jpg',
+  '/images/five/5-7.jpg',
+  '/images/five/5-8.jpg'
+],
+
+// Month 6
+5: [
+  '/images/six/6-1.jpg',
+  '/images/six/6-2.jpg',
+  '/images/six/6-3.jpg',
+  '/images/six/6-4.jpg',
+  '/images/six/6-5.jpg',
+  '/images/six/6-6.jpg',
+  '/images/six/6-7.jpg'
+]
+
   },
   // Editable captions. Replace with your own.
   milestones: [
