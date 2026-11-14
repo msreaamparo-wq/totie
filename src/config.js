@@ -80,7 +80,23 @@ export const CONFIG = {
   '/images/seven/7-10.jpg',
   '/images/seven/7-11.jpg',
   '/images/seven/7-12.jpg'
+],
+// Month 8
+7: [
+  '/images/eight/8-1.jpg',
+  '/images/eight/8-2.jpg',
+  '/images/eight/8-3.jpg',
+  '/images/eight/8-4.jpg',
+  '/images/eight/8-5.jpg',
+  '/images/eight/8-6.jpg',
+  '/images/eight/8-7.jpg',
+  '/images/eight/8-8.jpg',
+  '/images/eight/8-9.jpg',
+  '/images/eight/8-10.jpg',
+  '/images/eight/8-11.jpg',
+  '/images/eight/8-12.jpg'
 ]
+
 
   },
   // Editable captions. Replace with your own.
