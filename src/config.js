@@ -116,7 +116,22 @@ export const CONFIG = {
 
 
 
-]
+],
+
+// Month 10
+9: [
+  '/images/ten/10-1.jpg',
+  '/images/ten/10-2.jpg',
+  '/images/ten/10-3.jpg',
+  '/images/ten/10-4.jpg',
+  '/images/ten/10-5.jpg',
+  '/images/ten/10-6.jpg',
+  '/images/ten/10-7.jpg',
+  '/images/ten/10-8.jpg',
+  '/images/ten/10-9.jpg',
+  '/images/ten/10-10.jpg',
+  '/images/ten/10-11.jpg'
+],
 
 
   },
